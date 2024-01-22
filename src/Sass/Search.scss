@@ -1,0 +1,42 @@
+.main-today-tasks {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  width: 900px;
+  height: 600px;
+  background-color: purple; //kolor do zmiany tabela//
+  margin-left: 400px;
+  margin-top: 50px;
+  border-radius: 10px;
+}
+
+.main-today-tasks-table {
+
+  background-color: gray; //kolor do zmiany środek tabeli//
+  height: 500px;
+  width: 90%;
+  margin-right: 45px;
+  border-radius: 10px;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.list-styling {
+  margin: 15px;
+  background-color: white;
+  border-radius: 10px;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  button {
+    margin-left: 15px;
+    border-radius: 10px;
+    border: white 1px solid;
+    width: 100px;
+    height: 35px;
+    color: #041E33;
+    cursor: pointer;
+  }
+}
