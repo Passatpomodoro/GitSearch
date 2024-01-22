@@ -6,14 +6,14 @@ import {
 } from "react-router-dom";
 
 import Search from "./Search.jsx";
-import Favorites from "./Favorites.jsx";
+import Favourites from "./Favourites.jsx";
 
 function App () {
     return (
         <Router>
             <Routes>
                 <Route path="/" element={<Search/>}/>
-                <Route path="favorites" element={<Favorites/>}/>
+                <Route path="favourites" element={<Favourites/>}/>
             </Routes>
         </Router>
     )

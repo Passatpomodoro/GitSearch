@@ -10,7 +10,7 @@ export default function Sidebar () {
                         <Link to="/">Search</Link>
                     </li>
                     <li>
-                        <Link to="/favorites">Favorites</Link>
+                        <Link to="/favourites">Favourites</Link>
                     </li>
                 </ul>
             </div>
