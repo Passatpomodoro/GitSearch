@@ -1,5 +1,5 @@
 
-import "/src/Sass/Search.scss"
+import "/src/Sass/RepoList.scss"
 
 import React, { useState, useEffect } from 'react';
 import Sidebar from '../Components/Sidebar.jsx';

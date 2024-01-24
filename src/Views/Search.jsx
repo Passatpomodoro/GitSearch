@@ -1,20 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import '/src/Sass/Search.scss';
+import '/src/Sass/RepoList.scss';
 import '/src/Sass/SearchBar.scss';
-
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-// import {faSort} from "@fortawesome/free-brands-svg-icons";
-
+import SortBar from "../Components/SortBar.jsx";
 import Sidebar from '../Components/Sidebar.jsx';
+import SearchBar from '../Components/SearchBar.jsx';
 
 const RepoList = () => {
     const [repos, setRepos] = useState([]);
-    const [error, setError] = useState(null);
-    const [query, setQuery] = useState('');
+    const [error, setError] = useState([]);
+    const [favorites, setFavorites] = useState([]);
+    const [sortOption, setSortOption] = useState(null);
 
-    const handleSearch = async (event) => {
-        event.preventDefault();
-
+    const handleSearch = async (query) => {
         try {
             const response = await fetch(`https://api.github.com/search/repositories?q=${query}`, {
                 headers: {
@@ -34,25 +31,19 @@ const RepoList = () => {
         }
     };
 
-    const [favorites, setFavorites] = useState([]);
-
     useEffect(() => {
-
         const savedFavorites = JSON.parse(localStorage.getItem('favorites')) || [];
         setFavorites(savedFavorites);
     }, []);
 
     const handleDelete = (repoId) => {
-
         const updatedFavorites = favorites.filter((repo) => repo.id !== repoId);
-
         setFavorites(updatedFavorites);
         localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
     };
 
     const handleAddToFavorites = (repoId) => {
         const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
-
         const isAlreadyFavorite = favorites.some((favorite) => favorite.id === repoId);
 
         if (!isAlreadyFavorite) {
@@ -70,8 +61,6 @@ const RepoList = () => {
             }
         }
     };
-
-
 
     useEffect(() => {
         const fetchRepos = async () => {
@@ -97,34 +86,40 @@ const RepoList = () => {
         fetchRepos();
     }, []);
 
+
+    const handleSort = (option) => {
+        setSortOption(option);
+    };
+
+    useEffect(() => {
+        let sortedRepos = [...repos];
+
+        switch (sortOption) {
+            case 'ID ascending':
+                sortedRepos = sortedRepos.sort((a, b) => a.id - b.id);
+                break;
+            case 'ID descending':
+                sortedRepos = sortedRepos.sort((a, b) => b.id - a.id);
+                break;
+            case 'Date ascending':
+                sortedRepos = sortedRepos.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+                break;
+            case 'Date descending':
+                sortedRepos = sortedRepos.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+                break;
+            default:
+                break;
+        }
+        console.log('Sorted Repos:', sortedRepos);
+        setRepos(sortedRepos);
+    }, [sortOption]);
+
     return (
         <>
             <Sidebar />
-            <div className="searchBar">
-                <h1 className="searchBar-title">GitSearch</h1>
-                <img className="searchBar-img" src="/src/assets/GitSearch.svg" alt="GitSearch" />
-                <form className="searchBar-form" onSubmit={handleSearch}>
-                    <label className="searchBar-label" htmlFor="searchBar">
-                        Search:
-                    </label>
-                    <input
-                        className="searchBar-input"
-                        type="text"
-                        id="searchBar"
-                        value={query}
-                        onChange={(e) => setQuery(e.target.value)}
-                        placeholder="Enter your search query"
-                    />
-                    <button className="searchBar-button" type="submit">
-                        Search
-                    </button>
-                </form>
-            </div>
-
+            <SearchBar onSearch={handleSearch} />
+            <SortBar onSort={handleSort} />
             <div>
-                <div>
-                    {/*<FontAwesomeIcon icon="fa-solid fa-sort" />*/}
-                </div>
                 <div className="main-today-tasks">
                     <div className="main-today-tasks-table">
                         <ul>
