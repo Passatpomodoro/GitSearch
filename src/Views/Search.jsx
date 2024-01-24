@@ -15,7 +15,7 @@ const RepoList = () => {
         try {
             const response = await fetch(`https://api.github.com/search/repositories?q=${query}`, {
                 headers: {
-                    Authorization: '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',
+                    Authorization: `Bearer ${process.env.REACT_APP_GITHUB_TOKEN}`,
                 },
             });
 
@@ -67,7 +67,7 @@ const RepoList = () => {
             try {
                 const response = await fetch('https://api.github.com/repositories', {
                     headers: {
-                        Authorization: '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',
+                        Authorization: `Bearer ${process.env.REACT_APP_GITHUB_TOKEN}`,
                     },
                 });
 
