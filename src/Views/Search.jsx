@@ -15,7 +15,7 @@ const RepoList = () => {
         try {
             const response = await fetch(`https://api.github.com/search/repositories?q=${query}`, {
                 headers: {
-                    Authorization: `Bearer ${process.env.REACT_APP_GITHUB_TOKEN}`,
+                    Authorization: import.meta.env.VITE_API_KEY,
                 },
             });
 
@@ -25,6 +25,8 @@ const RepoList = () => {
 
             const data = await response.json();
             setRepos(data.items);
+
+            sessionStorage.setItem('cachedRepos', JSON.stringify(data.items));
         } catch (error) {
             setError(error.message);
             console.error('Error fetching repos:', error);
@@ -67,7 +69,7 @@ const RepoList = () => {
             try {
                 const response = await fetch('https://api.github.com/repositories', {
                     headers: {
-                        Authorization: `Bearer ${process.env.REACT_APP_GITHUB_TOKEN}`,
+                        Authorization: import.meta.env.VITE_API_KEY,
                     },
                 });
 
@@ -77,6 +79,8 @@ const RepoList = () => {
 
                 const data = await response.json();
                 setRepos(data);
+
+                sessionStorage.setItem('cachedRepos', JSON.stringify(data));
             } catch (error) {
                 setError(error.message);
                 console.error('Error fetching repos:', error);
@@ -85,6 +89,34 @@ const RepoList = () => {
 
         fetchRepos();
     }, []);
+
+    useEffect(() => {
+        const cachedRepos = JSON.parse(sessionStorage.getItem('cachedRepos')) || [];
+        setRepos(cachedRepos);
+    }, []);
+
+    const handleFetchMoreRepos = async (count) => {
+        event.preventDefault()
+        try {
+            const response = await fetch(`https://api.github.com/repositories?per_page=${count}`, {
+                headers: {
+                    Authorization: import.meta.env.VITE_API_KEY,
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error(`Request failed with status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            setRepos(data);
+
+            sessionStorage.setItem('cachedRepos', JSON.stringify(data));
+        } catch (error) {
+            setError(error.message);
+            console.error('Error fetching more repos:', error);
+        }
+    };
 
 
     const handleSort = (option) => {
@@ -118,7 +150,7 @@ const RepoList = () => {
         <>
             <Sidebar />
             <SearchBar onSearch={handleSearch} />
-            <SortBar onSort={handleSort} />
+            <SortBar onSort={handleSort} onFetchMoreRepos={handleFetchMoreRepos} />
             <div>
                 <div className="main-today-tasks">
                     <div className="main-today-tasks-table">
